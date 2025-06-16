@@ -38,6 +38,9 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
+    implementation ("com.intuit.sdp:sdp-android:1.1.1")
+    implementation("com.android.volley:volley:1.2.1")
+    implementation ("com.google.code.gson:gson:2.13.1")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
