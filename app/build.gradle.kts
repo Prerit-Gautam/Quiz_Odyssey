@@ -41,6 +41,8 @@ dependencies {
     implementation ("com.intuit.sdp:sdp-android:1.1.1")
     implementation("com.android.volley:volley:1.2.1")
     implementation ("com.google.code.gson:gson:2.13.1")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation ("com.airbnb.android:lottie:6.6.7")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }

@@ -4,6 +4,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -42,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
     Button submit, next;
     boolean flag=false;
 
-    String url="https://opentdb.com/api.php?amount=10&type=multiple";
+    String response="";
+    ResultsModel[] results;
     public static int selected=-1;
+    int score=0;
     int questionNumber=0;
     OptionAdapter adapter;
 
@@ -55,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
         initialiseMap();
 
+        response=getIntent().getStringExtra("response");
+
+
+
+
         difficulty=findViewById(R.id.difficulty);
         genre=findViewById(R.id.genre);
         question=findViewById(R.id.question);
@@ -64,35 +72,12 @@ public class MainActivity extends AppCompatActivity {
         next=findViewById(R.id.next);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        Gson gson=new GsonBuilder().create();
+        ResponseCodeAndResultsModel parsed =gson.fromJson(response, ResponseCodeAndResultsModel.class);
+        results=parsed.results;
 
-        RequestQueue queue= Volley.newRequestQueue(this);
-        StringRequest request=new StringRequest(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //Parsse the Json to Java Object using the model classes
-                GsonBuilder gsonBuilder=new GsonBuilder();
-                Gson gson=gsonBuilder.create();
+        initialiseQuestions(results, 0, true);
 
-                ResponseCodeAndResultsModel data=gson.fromJson(response, ResponseCodeAndResultsModel.class);
-                if (data.response_code==0){
-                    //Request and response were both successful
-
-                    ResultsModel[] results=data.results;
-                    initialiseQuestions(results, 0, true);
-
-                }else{
-                    //Something went wrong
-                    Toast.makeText(MainActivity.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        queue.add(request);
     }
 
     @SuppressLint("SetTextI18n")
@@ -122,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                         //Check if ans is correct
                         correctAns.setText("Correct Answer: " + results[questionNumber].correct_answer);
                         if (results[questionNumber].correct_answer == adapter.selectedText()) {
+                            score++;
                             Objects.requireNonNull(progress.get(questionNumber+1)).setBackgroundColor(Color.parseColor("#4CAF50"));
                             Toast.makeText(MainActivity.this, "Correct Answer", Toast.LENGTH_SHORT).show();
                         } else {
@@ -145,7 +131,10 @@ public class MainActivity extends AppCompatActivity {
                 flag=false;
                 if(questionNumber==9){
                     //All questions have been displayed
-                    Toast.makeText(MainActivity.this, "The Trivia has been completed", Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(MainActivity.this, ScoreActivity.class);
+                    intent.putExtra("score", String.valueOf(score));
+                    startActivity(intent);
+                    finish();
                 }else{
                     initialiseQuestions(results, questionNumber+1, true);
                 }
