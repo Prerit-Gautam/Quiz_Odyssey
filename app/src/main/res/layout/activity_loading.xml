@@ -20,7 +20,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please wait while we load the questions"
+        android:text=""
+        android:id="@+id/message"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         android:textSize="@dimen/_20sdp"

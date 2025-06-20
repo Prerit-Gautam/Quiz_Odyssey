@@ -53,6 +53,8 @@ public class TriviaModeAdapter extends RecyclerView.Adapter<TriviaModeAdapter.Tr
                 //Code to start activity
                 Intent intent=new Intent(context, LoadingActivity.class);
                 intent.putExtra("url", data.get(position).url);
+                intent.putExtra("message","Please wait while we load the questions");
+                intent.putExtra("code", "");
                 context.startActivity(intent);
             }
         });

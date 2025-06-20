@@ -1,5 +1,7 @@
 package com.example.quizodyssey.Activities;
 
+import static java.lang.Integer.parseInt;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.quizodyssey.R;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ScoreActivity extends AppCompatActivity {
     HashMap<Integer, String> scoreMessages=new HashMap<>();
@@ -29,7 +32,7 @@ public class ScoreActivity extends AppCompatActivity {
 
         initialiseScoreMessages();
 
-        score=Integer.parseInt(getIntent().getStringExtra("score"));
+        score= parseInt(Objects.requireNonNull(getIntent().getStringExtra("score")));
 
         score_holder=findViewById(R.id.score);
         message_holder=findViewById(R.id.message);

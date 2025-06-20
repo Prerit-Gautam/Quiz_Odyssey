@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.quizodyssey.R;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -27,21 +31,30 @@ public class WelcomeActivity extends AppCompatActivity {
 
         SharedPreferences preferences=getSharedPreferences("data", MODE_PRIVATE);
         boolean data=preferences.getBoolean("firstTime", true);
-        if(!data){
-            startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
+
+        String uid=preferences.getString("uid", " ");
+
+
+        if (!data) {
+            if (uid.equals(" ")) {
+                startActivity(new Intent(WelcomeActivity.this, RegisterActivity.class));
+            } else {
+                startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
+            }
             finish();
         }
-
-
         setContentView(R.layout.activity_welcome);
+
+
 
         main=findViewById(R.id.main);
         getStarted=findViewById(R.id.getStarted);
 
-        animDrawable = (AnimationDrawable) main.getBackground();
-        animDrawable.setEnterFadeDuration(2500);
-        animDrawable.setExitFadeDuration(5000);
-        animDrawable.start();
+            animDrawable = (AnimationDrawable) main.getBackground();
+            animDrawable.setEnterFadeDuration(2500);
+            animDrawable.setExitFadeDuration(5000);
+            animDrawable.start();
+
 
         getStarted.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,9 +62,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor=preferences.edit();
                 editor.putBoolean("firstTime", false);
                 editor.apply();
-
-
-                startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
+                startActivity(new Intent(WelcomeActivity.this, RegisterActivity.class));
                 finish();
             }
         });
