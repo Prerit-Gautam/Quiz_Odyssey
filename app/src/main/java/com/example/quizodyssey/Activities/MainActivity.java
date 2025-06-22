@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
     String response="";
     ResultsModel[] results;
     public static int selected=-1;
+    public static LinearLayout selectedLayout;
     int score=0;
+    int points=0;
     int questionNumber=0;
     OptionAdapter adapter;
 
@@ -59,9 +61,6 @@ public class MainActivity extends AppCompatActivity {
         initialiseMap();
 
         response=getIntent().getStringExtra("response");
-
-
-
 
         difficulty=findViewById(R.id.difficulty);
         genre=findViewById(R.id.genre);
@@ -94,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             adapter = new OptionAdapter(getApplicationContext(), optionsMultiple(results[questionNumber].correct_answer, results[questionNumber].incorrect_answers));
             recyclerView.setAdapter(adapter);
         }
+
         //Checks if answer is correct and sets paramenters to different values
         submit.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -107,15 +107,24 @@ public class MainActivity extends AppCompatActivity {
                         //Check if ans is correct
                         correctAns.setText("Correct Answer: " + results[questionNumber].correct_answer);
                         if (results[questionNumber].correct_answer == adapter.selectedText()) {
+                            selectedLayout.setBackgroundResource(R.drawable.option_correct);
                             score++;
                             Objects.requireNonNull(progress.get(questionNumber+1)).setBackgroundColor(Color.parseColor("#4CAF50"));
+                            if(results[questionNumber].difficulty.toUpperCase()=="HARD"){
+                                points+=3;
+                            }else if(results[questionNumber].difficulty.toUpperCase()=="MEDIUM"){
+                                points+=2;
+                            }else{
+                                //easy question
+                                points+=1;
+                            }
                             Toast.makeText(MainActivity.this, "Correct Answer", Toast.LENGTH_SHORT).show();
                         } else {
+                            selectedLayout.setBackgroundResource(R.drawable.option_incorrect);
                             Objects.requireNonNull(progress.get(questionNumber+1)).setBackgroundColor(Color.parseColor("#F44336"));
                             Toast.makeText(MainActivity.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
                         }
                         selected = -1;
-                        adapter.notifyDataSetChanged();
                         flag=true;
                     }else{
                         Toast.makeText(MainActivity.this, "Please move on to the next Question", Toast.LENGTH_SHORT).show();
@@ -133,9 +142,11 @@ public class MainActivity extends AppCompatActivity {
                     //All questions have been displayed
                     Intent intent=new Intent(MainActivity.this, ScoreActivity.class);
                     intent.putExtra("score", String.valueOf(score));
+                    intent.putExtra("points", String.valueOf(points));
                     startActivity(intent);
                     finish();
                 }else{
+                    MainActivity.selected=-1;
                     initialiseQuestions(results, questionNumber+1, true);
                 }
             }

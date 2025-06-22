@@ -18,6 +18,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
     Context context;
     String[] data;
 
+
     public OptionAdapter(Context context, String[] data){
         this.context=context;
         this.data=data;
@@ -29,8 +30,10 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         return new OptionViewHolder(LayoutInflater.from(context).inflate(R.layout.options, parent, false));
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull OptionViewHolder holder, int position) {
+
         holder.button.setText(Html.fromHtml(data[position], Html.FROM_HTML_MODE_LEGACY));
         holder.button.setChecked(MainActivity.selected ==position);
         if (MainActivity.selected!=position){
@@ -41,6 +44,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
             public void onClick(View v) {
                 holder.layout.setBackgroundResource(R.drawable.option_selcted);
                 MainActivity.selected = holder.getAdapterPosition();
+                MainActivity.selectedLayout=holder.layout;
                 notifyDataSetChanged();
             }
         });
@@ -56,8 +60,8 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         return data[MainActivity.selected];
     }
     public class OptionViewHolder extends RecyclerView.ViewHolder{
-        RadioButton button;
-        LinearLayout layout;
+        public RadioButton button;
+        public LinearLayout layout;
         public OptionViewHolder(@NonNull View itemView) {
             super(itemView);
             button=itemView.findViewById(R.id.button);

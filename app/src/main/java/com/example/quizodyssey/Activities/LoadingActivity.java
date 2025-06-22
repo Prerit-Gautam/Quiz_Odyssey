@@ -116,6 +116,7 @@ public class LoadingActivity extends AppCompatActivity {
         model.submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                model.dialog.dismiss();
                 String username_txt = model.username.getText().toString().trim();
                 if (username_txt.length() < 4) {
                     Toast.makeText(LoadingActivity.this, "Username has to be a minimum of 4 characters", Toast.LENGTH_SHORT).show();
@@ -125,26 +126,25 @@ public class LoadingActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             String uid = auth.getCurrentUser().getUid();
-                            setUid(uid);
                             sendRequest(model, auth, username_txt);
                         }
                     });
 
                 }
             }
+           
         });
     }
 
     private void sendRequest(DialogModel model, FirebaseAuth auth, String username_txt) {
-        String url = "http://10.0.2.2/quiz_odessy_api/registerUser.php";
+        String url = "http://quizodessy.mooo.com/quiz_odessy_api/registerUser.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                System.err.println(response);
                 if (response.equals("100")) {
                     // Query was executed successfully
-                    model.dialog.dismiss();
                     setUid(auth.getCurrentUser().getUid());
-
                     startActivity(new Intent(LoadingActivity.this, HomeActivity.class));
                     finish();
                 } else {
@@ -155,7 +155,8 @@ public class LoadingActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(LoadingActivity.this, error.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                System.err.println(error.getMessage());
+                Toast.makeText(LoadingActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 finish();
 
             }
@@ -203,6 +204,7 @@ public class LoadingActivity extends AppCompatActivity {
         model.submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                model.dialog.dismiss();
                 String username_txt = model.username.getText().toString().trim();
                 if (username_txt.length() < 4) {
                     Toast.makeText(LoadingActivity.this, "Username has to be a minimum of 4 characters", Toast.LENGTH_SHORT).show();
@@ -230,7 +232,6 @@ public class LoadingActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    model.dialog.dismiss();
                 }
             }
         });
@@ -239,6 +240,7 @@ public class LoadingActivity extends AppCompatActivity {
     private void setUid(String uid) {
         SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
         editor.putString("uid", uid);
+
         editor.commit();
     }
 
